@@ -22,7 +22,11 @@ export const authOptions = {
 
         if (!isValid) throw new Error("Invalid password");
 
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.username,
+        };
       },
     }),
   ],
