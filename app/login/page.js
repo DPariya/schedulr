@@ -8,15 +8,20 @@ export default function Login() {
     email: "",
     password: "",
   });
-
+  const [error, setError] = useState("");
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       ...form,
-      redirect: true,
-      callbackUrl: "/dashboard",
+      redirect: false,
     });
+
+    if (res.error) {
+      setError("Invalid email or password");
+    } else {
+      window.location.href = "/dashboard";
+    }
   };
 
   return (
@@ -26,7 +31,7 @@ export default function Login() {
         className="bg-white p-8 rounded-lg shadow-md w-80 space-y-4"
       >
         <h2 className="text-xl font-semibold text-center">Login</h2>
-
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <input
           type="email"
           className="w-full border p-2 rounded"
