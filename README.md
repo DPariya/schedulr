@@ -8,13 +8,13 @@ A Calendly-style scheduling app built with Next.js. Users set their availability
 
 ### Login & Dashboard
 
-![Login and Dashboard](./images/home.png)
-(./images/login.png)
-(./images/dashboard.png)
+![Home](./public/images/home.png)
+![Login](./public/images/login.png)
+![Dashboard](./public/images/dashboard.png)
 
 ### Booking Form
 
-![Booking Form](./images/booking.png)
+![Booking Form](./public/images/booking.png)
 
 ---
 
