@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { createCalendarEvent } from "@/lib/google-calendar";
+import { sendHostNotification } from "@/lib/mailer";
 
 export async function POST(req) {
   const { userId, guestName, guestEmail, start, end } = await req.json();
@@ -34,7 +35,12 @@ export async function POST(req) {
 
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { googleAccessToken: true, googleRefreshToken: true },
+    select: {
+      email: true,
+      name: true,
+      googleAccessToken: true,
+      googleRefreshToken: true,
+    },
   });
 
   if (user?.googleAccessToken) {
@@ -52,6 +58,23 @@ export async function POST(req) {
     } catch (e) {
       // Calendar sync failed — booking still succeeds
       console.log("error in catch", e);
+    }
+  }
+
+  const hostName = user?.name ?? user?.email;
+
+  if (user?.email) {
+    try {
+      await sendHostNotification({
+        to: user.email,
+        hostName,
+        guestName,
+        guestEmail,
+        start: startDate,
+        end: endDate,
+      });
+    } catch (e) {
+      console.log("email send error (host)", e);
     }
   }
 
