@@ -20,8 +20,7 @@ function generateSlots(startTime, endTime) {
 }
 
 function todayStr() {
-  const d = new Date();
-  return d.toISOString().split("T")[0];
+  return new Date().toISOString().split("T")[0];
 }
 
 function toUTCDate(dateStr, timeStr, timezone) {
@@ -94,43 +93,36 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
 
   if (booked) {
     return (
-      <div className="mt-6 p-6 bg-green-500/10 border border-green-500/30 rounded-xl text-center">
+      <div className="mt-6 p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-center">
         <div className="text-3xl mb-2">✓</div>
-        <h3 className="text-lg font-semibold text-green-400">Booking Confirmed!</h3>
-        <p className="text-green-400/80 mt-1 text-sm">
-          {selectedDate} at {selectedSlot.label}
-        </p>
-        <p className="text-slate-400 text-sm mt-1">A confirmation has been noted for {guestEmail}.</p>
+        <h3 className="text-lg font-bold text-emerald-400">Booking Confirmed!</h3>
+        <p className="text-emerald-400/80 mt-1 text-sm">{selectedDate} at {selectedSlot.label}</p>
+        <p className="text-zinc-400 text-sm mt-1">A confirmation has been noted for {guestEmail}.</p>
       </div>
     );
   }
 
   return (
     <div className="mt-6 space-y-4">
-      {/* Date Picker */}
       <div>
-        <label className="block text-sm text-slate-400 mb-1.5">Select Date</label>
+        <label className="block text-sm text-zinc-400 mb-1.5">Select Date</label>
         <input
           type="date"
           min={todayStr()}
           value={selectedDate}
-          onChange={(e) => {
-            setSelectedDate(e.target.value);
-            setSelectedSlot(null);
-          }}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          onChange={(e) => { setSelectedDate(e.target.value); setSelectedSlot(null); }}
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-zinc-300 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </div>
 
-      {/* Time Slots */}
       {selectedDate && (
         <div>
-          <label className="block text-sm text-slate-400 mb-2">
+          <label className="block text-sm text-zinc-400 mb-2">
             Available Slots
-            <span className="ml-2 text-slate-500 font-normal text-xs">({hostTimezone})</span>
+            <span className="ml-2 text-zinc-500 font-normal text-xs">({hostTimezone})</span>
           </label>
           {slotsForDate.length === 0 ? (
-            <p className="text-sm text-slate-500 italic">No availability on this day.</p>
+            <p className="text-sm text-zinc-500 italic">No availability on this day.</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {slotsForDate.map((slot) => (
@@ -139,8 +131,8 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
                   onClick={() => setSelectedSlot(slot)}
                   className={`border rounded-xl py-2 px-3 text-sm transition-colors ${
                     selectedSlot?.label === slot.label
-                      ? "bg-indigo-500 text-white border-indigo-500"
-                      : "bg-white/5 text-slate-300 border-white/10 hover:border-indigo-400"
+                      ? "bg-emerald-500 text-white border-emerald-500"
+                      : "bg-white/5 text-zinc-300 border-white/10 hover:border-emerald-400"
                   }`}
                 >
                   {slot.label}
@@ -151,25 +143,25 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
         </div>
       )}
 
-      {/* Guest Info */}
       <div>
-        <label className="block text-sm text-slate-400 mb-1.5">Your Name</label>
+        <label className="block text-sm text-zinc-400 mb-1.5">Your Name</label>
         <input
           type="text"
           placeholder="Jane Doe"
           value={guestName}
           onChange={(e) => setGuestName(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </div>
+
       <div>
-        <label className="block text-sm text-slate-400 mb-1.5">Your Email</label>
+        <label className="block text-sm text-zinc-400 mb-1.5">Your Email</label>
         <input
           type="email"
           placeholder="jane@example.com"
           value={guestEmail}
           onChange={(e) => setGuestEmail(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-emerald-500"
         />
       </div>
 
@@ -182,7 +174,7 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
       <button
         onClick={handleBook}
         disabled={loading}
-        className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 text-white py-3 rounded-xl font-medium transition-colors shadow-lg shadow-indigo-500/25"
+        className="w-full bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 text-white py-3 rounded-xl font-semibold transition-colors shadow-lg shadow-emerald-500/25"
       >
         {loading ? "Booking..." : "Confirm Booking"}
       </button>

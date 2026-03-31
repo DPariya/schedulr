@@ -4,8 +4,8 @@ export default function GoogleCalendarButton({ connected }) {
   if (connected) {
     return (
       <div className="flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
-        <span className="text-sm text-slate-300">Google Calendar connected</span>
+        <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+        <span className="text-sm text-zinc-300">Google Calendar connected</span>
       </div>
     );
   }
@@ -13,7 +13,7 @@ export default function GoogleCalendarButton({ connected }) {
   return (
     <a
       href="/api/auth/google"
-      className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-slate-300 hover:bg-white/10 transition-colors"
+      className="inline-flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-zinc-300 hover:bg-white/10 transition-colors"
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />

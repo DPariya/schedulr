@@ -31,13 +31,20 @@ export default async function Dashboard() {
   const googleConnected = !!user?.googleAccessToken;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-10 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 py-10 px-4">
       <div className="max-w-lg mx-auto space-y-5">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-semibold text-white">Hello, {username}</h1>
-            <p className="text-sm text-slate-400">Manage your availability</p>
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center shadow-md shadow-emerald-500/30">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-white leading-tight">Hello, {username}</h1>
+              <p className="text-xs text-zinc-400">Manage your availability</p>
+            </div>
           </div>
           <LogoutButton />
         </div>
@@ -45,9 +52,9 @@ export default async function Dashboard() {
         {/* Booking link card */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-white mb-1">Your Booking Link</h2>
-          <p className="text-xs text-slate-400 mb-3">Share this link so others can book time with you.</p>
+          <p className="text-xs text-zinc-400 mb-3">Share this link so others can book time with you.</p>
           <div className="flex items-center gap-2">
-            <span className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-300 truncate">
+            <span className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-zinc-300 truncate">
               /u/{username}
             </span>
             <CopyLinkButton url={bookingUrl} />
@@ -57,14 +64,14 @@ export default async function Dashboard() {
         {/* Timezone */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-white mb-1">Your Timezone</h2>
-          <p className="text-xs text-slate-400 mb-3">Guests will see your availability in this timezone.</p>
+          <p className="text-xs text-zinc-400 mb-3">Guests will see your availability in this timezone.</p>
           <TimezoneForm currentTimezone={userTimezone} />
         </div>
 
         {/* Google Calendar */}
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-white mb-1">Google Calendar</h2>
-          <p className="text-xs text-slate-400 mb-3">New bookings will automatically appear in your Google Calendar.</p>
+          <p className="text-xs text-zinc-400 mb-3">New bookings will automatically appear in your Google Calendar.</p>
           <GoogleCalendarButton connected={googleConnected} />
         </div>
 
@@ -78,7 +85,7 @@ export default async function Dashboard() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
           <h2 className="text-sm font-semibold text-white mb-4">Upcoming Bookings</h2>
           {bookings.length === 0 ? (
-            <p className="text-sm text-slate-500 italic">No upcoming bookings.</p>
+            <p className="text-sm text-zinc-500 italic">No upcoming bookings.</p>
           ) : (
             <ul className="space-y-3">
               {bookings.map((b) => {
@@ -91,11 +98,11 @@ export default async function Dashboard() {
                   <li key={b.id} className="flex items-start justify-between gap-4 py-2 border-b border-white/10 last:border-0">
                     <div>
                       <p className="text-sm font-medium text-white">{b.guestName}</p>
-                      <p className="text-xs text-slate-400">{b.guestEmail}</p>
+                      <p className="text-xs text-zinc-400">{b.guestEmail}</p>
                     </div>
                     <div className="text-right shrink-0">
-                      <p className="text-xs font-medium text-slate-300">{dateStr}</p>
-                      <p className="text-xs text-slate-400">{startTime} – {endTime}</p>
+                      <p className="text-xs font-medium text-zinc-300">{dateStr}</p>
+                      <p className="text-xs text-zinc-400">{startTime} – {endTime}</p>
                     </div>
                   </li>
                 );
