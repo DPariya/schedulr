@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-// Generate 30-min slots between startTime and endTime (e.g. "09:00" to "17:00")
 function generateSlots(startTime, endTime) {
   const slots = [];
   const [sh, sm] = startTime.split(":").map(Number);
@@ -20,13 +19,11 @@ function generateSlots(startTime, endTime) {
   return slots;
 }
 
-// Get today's date string in YYYY-MM-DD (local)
 function todayStr() {
   const d = new Date();
   return d.toISOString().split("T")[0];
 }
 
-// Convert a date + HH:MM time string in a given IANA timezone to a UTC Date
 function toUTCDate(dateStr, timeStr, timezone) {
   const guessUTC = new Date(`${dateStr}T${timeStr}:00Z`);
   const inTZ = new Intl.DateTimeFormat("en-CA", {
@@ -40,7 +37,6 @@ function toUTCDate(dateStr, timeStr, timezone) {
   return new Date(guessUTC.getTime() + offset);
 }
 
-// Get day of week (0=Sun…6=Sat) for a YYYY-MM-DD date in a given timezone
 function getDayOfWeekInTZ(dateStr, timezone) {
   const label = new Intl.DateTimeFormat("en-US", { weekday: "long", timeZone: timezone })
     .format(new Date(dateStr + "T12:00:00Z"));
@@ -56,7 +52,6 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
   const [booked, setBooked] = useState(false);
   const [error, setError] = useState("");
 
-  // Get available time slots for the selected date (in host's timezone)
   const slotsForDate = (() => {
     if (!selectedDate) return [];
     const dayOfWeek = getDayOfWeekInTZ(selectedDate, hostTimezone);
@@ -99,22 +94,22 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
 
   if (booked) {
     return (
-      <div className="mt-8 p-6 bg-green-50 border border-green-200 rounded-xl text-center">
+      <div className="mt-6 p-6 bg-green-500/10 border border-green-500/30 rounded-xl text-center">
         <div className="text-3xl mb-2">✓</div>
-        <h3 className="text-lg font-semibold text-green-800">Booking Confirmed!</h3>
-        <p className="text-green-700 mt-1 text-sm">
+        <h3 className="text-lg font-semibold text-green-400">Booking Confirmed!</h3>
+        <p className="text-green-400/80 mt-1 text-sm">
           {selectedDate} at {selectedSlot.label}
         </p>
-        <p className="text-green-600 text-sm mt-1">A confirmation has been noted for {guestEmail}.</p>
+        <p className="text-slate-400 text-sm mt-1">A confirmation has been noted for {guestEmail}.</p>
       </div>
     );
   }
 
   return (
-    <div className="mt-6 space-y-5">
+    <div className="mt-6 space-y-4">
       {/* Date Picker */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Select Date</label>
+        <label className="block text-sm text-slate-400 mb-1.5">Select Date</label>
         <input
           type="date"
           min={todayStr()}
@@ -123,31 +118,29 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
             setSelectedDate(e.target.value);
             setSelectedSlot(null);
           }}
-          className="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
       {/* Time Slots */}
       {selectedDate && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm text-slate-400 mb-2">
             Available Slots
-            <span className="ml-2 text-gray-400 font-normal text-xs">
-              (times in {hostTimezone})
-            </span>
+            <span className="ml-2 text-slate-500 font-normal text-xs">({hostTimezone})</span>
           </label>
           {slotsForDate.length === 0 ? (
-            <p className="text-sm text-gray-500 italic">No availability on this day.</p>
+            <p className="text-sm text-slate-500 italic">No availability on this day.</p>
           ) : (
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {slotsForDate.map((slot) => (
                 <button
                   key={slot.key}
                   onClick={() => setSelectedSlot(slot)}
-                  className={`border rounded-lg py-2 px-3 text-sm transition-colors ${
+                  className={`border rounded-xl py-2 px-3 text-sm transition-colors ${
                     selectedSlot?.label === slot.label
-                      ? "bg-black text-white border-black"
-                      : "bg-white text-gray-700 border-gray-300 hover:border-black"
+                      ? "bg-indigo-500 text-white border-indigo-500"
+                      : "bg-white/5 text-slate-300 border-white/10 hover:border-indigo-400"
                   }`}
                 >
                   {slot.label}
@@ -160,32 +153,36 @@ export default function BookingForm({ userId, availability, hostTimezone }) {
 
       {/* Guest Info */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+        <label className="block text-sm text-slate-400 mb-1.5">Your Name</label>
         <input
           type="text"
           placeholder="Jane Doe"
           value={guestName}
           onChange={(e) => setGuestName(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+        <label className="block text-sm text-slate-400 mb-1.5">Your Email</label>
         <input
           type="email"
           placeholder="jane@example.com"
           value={guestEmail}
           onChange={(e) => setGuestEmail(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && (
+        <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-3">
+          <p className="text-sm text-red-400">{error}</p>
+        </div>
+      )}
 
       <button
         onClick={handleBook}
         disabled={loading}
-        className="w-full bg-black text-white py-3 rounded-lg font-medium hover:bg-gray-800 disabled:opacity-50 transition-colors"
+        className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 text-white py-3 rounded-xl font-medium transition-colors shadow-lg shadow-indigo-500/25"
       >
         {loading ? "Booking..." : "Confirm Booking"}
       </button>

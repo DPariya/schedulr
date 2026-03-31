@@ -10,47 +10,49 @@ export default function AvailabilityForm() {
   const handleSubmit = async () => {
     await fetch("/api/availability", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(slots),
     });
-
     alert("Availability saved!");
   };
 
   return (
-    <div className="bg-white p-4 rounded shadow w-80 space-y-4">
-      <h2 className="font-semibold">Set Availability</h2>
-
+    <div className="space-y-3">
       <select
         onChange={(e) =>
           setSlots([{ ...slots[0], dayOfWeek: Number(e.target.value) }])
         }
-        className="w-full border p-2"
+        className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
-        <option value={1}>Monday</option>
-        <option value={2}>Tuesday</option>
-        <option value={3}>Wednesday</option>
-        <option value={4}>Thursday</option>
-        <option value={5}>Friday</option>
+        <option value={1} className="bg-slate-800">Monday</option>
+        <option value={2} className="bg-slate-800">Tuesday</option>
+        <option value={3} className="bg-slate-800">Wednesday</option>
+        <option value={4} className="bg-slate-800">Thursday</option>
+        <option value={5} className="bg-slate-800">Friday</option>
       </select>
 
-      <input
-        type="time"
-        className="w-full border p-2"
-        onChange={(e) => setSlots([{ ...slots[0], startTime: e.target.value }])}
-      />
-
-      <input
-        type="time"
-        className="w-full border p-2"
-        onChange={(e) => setSlots([{ ...slots[0], endTime: e.target.value }])}
-      />
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <label className="block text-xs text-slate-400 mb-1">Start</label>
+          <input
+            type="time"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            onChange={(e) => setSlots([{ ...slots[0], startTime: e.target.value }])}
+          />
+        </div>
+        <div className="flex-1">
+          <label className="block text-xs text-slate-400 mb-1">End</label>
+          <input
+            type="time"
+            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            onChange={(e) => setSlots([{ ...slots[0], endTime: e.target.value }])}
+          />
+        </div>
+      </div>
 
       <button
         onClick={handleSubmit}
-        className="w-full bg-black text-white py-2"
+        className="w-full bg-indigo-500 hover:bg-indigo-600 text-white py-2.5 rounded-xl text-sm font-medium transition-colors"
       >
         Save Availability
       </button>

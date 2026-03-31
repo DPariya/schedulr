@@ -30,15 +30,15 @@ export default function TimezoneForm({ currentTimezone }) {
       <select
         value={timezone}
         onChange={(e) => setTimezone(e.target.value)}
-        className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
       >
         {timezones.map((tz) => (
-          <option key={tz} value={tz}>{tz}</option>
+          <option key={tz} value={tz} className="bg-slate-800">{tz}</option>
         ))}
       </select>
       <button
         onClick={handleSave}
-        className="px-4 py-2 bg-black text-white text-sm rounded-lg hover:bg-gray-800 transition-colors"
+        className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm rounded-xl transition-colors"
       >
         {saved ? "Saved!" : "Save"}
       </button>
