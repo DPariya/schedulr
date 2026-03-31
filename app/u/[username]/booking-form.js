@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
 // Generate 30-min slots between startTime and endTime (e.g. "09:00" to "17:00")
 function generateSlots(startTime, endTime) {
   const slots = [];
@@ -28,7 +26,28 @@ function todayStr() {
   return d.toISOString().split("T")[0];
 }
 
-export default function BookingForm({ userId, availability }) {
+// Convert a date + HH:MM time string in a given IANA timezone to a UTC Date
+function toUTCDate(dateStr, timeStr, timezone) {
+  const guessUTC = new Date(`${dateStr}T${timeStr}:00Z`);
+  const inTZ = new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: false,
+  }).format(guessUTC);
+  const tzDate = new Date(inTZ.replace(", ", "T") + "Z");
+  const offset = guessUTC.getTime() - tzDate.getTime();
+  return new Date(guessUTC.getTime() + offset);
+}
+
+// Get day of week (0=Sun…6=Sat) for a YYYY-MM-DD date in a given timezone
+function getDayOfWeekInTZ(dateStr, timezone) {
+  const label = new Intl.DateTimeFormat("en-US", { weekday: "long", timeZone: timezone })
+    .format(new Date(dateStr + "T12:00:00Z"));
+  return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"].indexOf(label);
+}
+
+export default function BookingForm({ userId, availability, hostTimezone }) {
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [guestName, setGuestName] = useState("");
@@ -37,13 +56,14 @@ export default function BookingForm({ userId, availability }) {
   const [booked, setBooked] = useState(false);
   const [error, setError] = useState("");
 
-  // Get available time slots for the selected date
+  // Get available time slots for the selected date (in host's timezone)
   const slotsForDate = (() => {
     if (!selectedDate) return [];
-    const jsDay = new Date(selectedDate + "T00:00:00").getDay(); // 0=Sun,1=Mon,...
-    // Schema stores 1=Mon...5=Fri, matching JS getDay for weekdays
-    const matchingAvail = availability.filter((a) => a.dayOfWeek === jsDay);
-    return matchingAvail.flatMap((a) => generateSlots(a.startTime, a.endTime));
+    const dayOfWeek = getDayOfWeekInTZ(selectedDate, hostTimezone);
+    const matchingAvail = availability.filter((a) => a.dayOfWeek === dayOfWeek);
+    return matchingAvail.flatMap((a) =>
+      generateSlots(a.startTime, a.endTime).map((slot) => ({ ...slot, key: `${a.id}-${slot.label}` }))
+    );
   })();
 
   const handleBook = async () => {
@@ -58,8 +78,8 @@ export default function BookingForm({ userId, availability }) {
     setError("");
     setLoading(true);
 
-    const start = new Date(`${selectedDate}T${selectedSlot.start}:00`);
-    const end = new Date(`${selectedDate}T${selectedSlot.end}:00`);
+    const start = toUTCDate(selectedDate, selectedSlot.start, hostTimezone);
+    const end = toUTCDate(selectedDate, selectedSlot.end, hostTimezone);
 
     const res = await fetch("/api/book", {
       method: "POST",
@@ -70,6 +90,8 @@ export default function BookingForm({ userId, availability }) {
     setLoading(false);
     if (res.ok) {
       setBooked(true);
+    } else if (res.status === 409) {
+      setError("This slot is already booked. Please choose another time.");
     } else {
       setError("Something went wrong. Please try again.");
     }
@@ -110,11 +132,9 @@ export default function BookingForm({ userId, availability }) {
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Available Slots
-            {selectedDate && (
-              <span className="ml-2 text-gray-400 font-normal">
-                ({DAY_NAMES[new Date(selectedDate + "T00:00:00").getDay()]})
-              </span>
-            )}
+            <span className="ml-2 text-gray-400 font-normal text-xs">
+              (times in {hostTimezone})
+            </span>
           </label>
           {slotsForDate.length === 0 ? (
             <p className="text-sm text-gray-500 italic">No availability on this day.</p>
@@ -122,7 +142,7 @@ export default function BookingForm({ userId, availability }) {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {slotsForDate.map((slot) => (
                 <button
-                  key={slot.label}
+                  key={slot.key}
                   onClick={() => setSelectedSlot(slot)}
                   className={`border rounded-lg py-2 px-3 text-sm transition-colors ${
                     selectedSlot?.label === slot.label

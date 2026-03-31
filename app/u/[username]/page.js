@@ -9,6 +9,7 @@ export default async function UserPage({ params }) {
   const user = await prisma.user.findUnique({
     where: { username },
     include: { availability: true },
+    // timezone is included via the model select automatically
   });
 
   if (!user) {
@@ -57,7 +58,7 @@ export default async function UserPage({ params }) {
         <h2 className="text-sm font-semibold text-gray-700 mb-1">Schedule a Meeting</h2>
         <p className="text-xs text-gray-400 mb-2">Pick a date and time that works for you.</p>
 
-        <BookingForm userId={user.id} availability={user.availability} />
+        <BookingForm userId={user.id} availability={user.availability} hostTimezone={user.timezone || "UTC"} />
       </div>
     </div>
   );
