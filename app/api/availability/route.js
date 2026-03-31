@@ -11,13 +11,15 @@ export async function POST(req) {
 
   const slots = await req.json();
 
-  const data = slots.map((slot) => ({
-    ...slot,
-    userId: session.user.id,
-  }));
+  const days = slots.map((s) => s.dayOfWeek);
+
+  // Replace existing records for the submitted days
+  await prisma.availability.deleteMany({
+    where: { userId: session.user.id, dayOfWeek: { in: days } },
+  });
 
   await prisma.availability.createMany({
-    data,
+    data: slots.map((slot) => ({ ...slot, userId: session.user.id })),
   });
 
   return Response.json({ success: true });
